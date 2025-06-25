@@ -10,9 +10,20 @@ class Pustakawan extends Authenticatable implements JWTSubject
     protected $table = 'pustakawans';
     protected $primaryKey = 'id_pustakawan';
 
-    protected $fillable = ['usr_pustaka', 'pw_pustaka', 'nama_pustaka', 'no_tlp_pustaka', 'alamat_pustaka'];
-    protected $hidden = ['pw_pustaka'];
+    protected $fillable = [
+        'username',
+        'password',
+        'nama_pustaka',
+        'no_tlp_pustaka',
+        'alamat_pustaka',
+        'id_admin', // pastikan kolom ini ada di tabel
+    ];
 
+    protected $hidden = [
+        'password', // untuk menyembunyikan saat serialisasi
+    ];
+
+    // JWT Implementation
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -23,8 +34,9 @@ class Pustakawan extends Authenticatable implements JWTSubject
         return [];
     }
 
+    // Laravel will automatically use this method to retrieve the password for authentication
     public function getAuthPassword()
     {
-        return $this->pw_pustaka;
+        return $this->password;
     }
 }

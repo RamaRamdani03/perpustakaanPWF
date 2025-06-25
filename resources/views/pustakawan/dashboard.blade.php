@@ -1,55 +1,51 @@
+{{-- resources/views/pustakawan/dashboard.blade.php --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Dashboard Admin</title>
+  <meta charset="UTF-8" />
+  <title>Dashboard Pustakawan</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .bg-dark-brown {
-      background-color: #353333;
-    }
-    .bg-brown-hover:hover {
-      background-color: #4a4a4a;
-    }
-    .bg-brown {
-      background-color: #5c4033;
-    }
+    .bg-dark-brown { background-color: #353333; }
+    .bg-brown-hover:hover { background-color: #4a4a4a; }
+    .bg-brown { background-color: #5c4033; }
   </style>
 </head>
 <body class="bg-amber-100 font-sans">
 
-  <div class="flex transition-all duration-300">
+  <div class="flex transition-all duration-300 min-h-screen">
     <!-- Sidebar -->
     <aside id="sidebar" class="w-64 bg-dark-brown text-white min-h-screen p-6 space-y-6 transition-all duration-300">
-      <!-- Logo -->
       <div class="text-center">
-        <img src="{{ asset('images/logoperpus.png') }}" alt="Logo Perpus" class="h-20 mx-auto mb-4">
-        <h2 class="text-xl font-bold">Admin Panel</h2>
+        <img src="{{ asset('images/logoperpus.png') }}" alt="Logo Perpus" class="h-20 mx-auto mb-4" />
+       <h2 class="text-xl font-bold">
+        {{ auth()->user()->nama_pustaka}}
+        </h2>
       </div>
-
-      <!-- Nav -->
       <nav class="space-y-3">
-        <a href="{{ url('/admin/dashboard') }}" class="block px-3 py-2 rounded bg-gray-700 bg-brown-hover">Dashboard</a>
-        <a href="{{ route('pustakawan.index') }}" class="block px-3 py-2 rounded bg-brown-hover">Pustakawan</a>
-        <a href="{{ route('kategori.index') }}" class="block px-3 py-2 rounded bg-brown-hover">Kategori Buku</a>
+        <a href="{{ url('/pustakawan/dashboard') }}" class="block px-3 py-2 rounded bg-gray-700">Dashboard</a>
+        <a href="{{ route('buku.index') }}" class="block px-3 py-2 rounded hover:bg-brown-hover">Buku</a>
+        <a href="{{ route('anggota.index') }}" class="block px-3 py-2 rounded hover:bg-brown-hover">Anggota</a>
+        <a href="{{ route('peminjaman.index') }}" class="block px-3 py-2 rounded hover:bg-brown-hover">Peminjaman</a>
+        <a href="#" class="block px-3 py-2 rounded hover:bg-brown-hover">Pengembalian</a>
       </nav>
     </aside>
 
-    <!-- Main -->
-    <div id="main-content" class="flex-1 p-10 transition-all duration-300 relative">
+    <!-- Main Content -->
+    <main id="main-content" class="flex-1 p-10 transition-all duration-300 relative">
 
       <!-- Sidebar Toggle Button -->
       <button onclick="toggleSidebar()" class="absolute top-4 left-4 bg-dark-brown text-white p-2 rounded-md shadow-md z-20">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
 
-      <!-- Admin Dropdown -->
+      <!-- User Dropdown -->
       <div class="absolute top-4 right-6">
         <div class="relative inline-block text-left">
           <button onclick="toggleDropdown()" class="flex items-center px-4 py-2 bg-brown text-white font-semibold rounded-md hover:opacity-90 shadow">
-            Admin
+            {{ auth()->user()->nama_pustaka ?? 'Pustakawan' }}
             <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
@@ -63,20 +59,26 @@
         </div>
       </div>
 
-      <!-- Page content -->
-      <h1 class="text-3xl font-bold text-gray-800 mb-6 mt-12">Selamat Datang, Admin!</h1>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-white p-6 rounded-lg shadow text-center">
-          <h2 class="text-xl font-semibold text-gray-700 mb-2">Jumlah Pustakawan</h2>
-          <p class="text-4xl font-bold text-black">{{ \App\Models\Pustakawan::count() }}</p>
+      <!-- Page Title -->
+      <h1 class="text-3xl font-bold text-gray-800 mb-6 mt-12">Dashboard Pustakawan</h1>
+
+      <!-- Contoh Konten Dashboard -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded shadow">
+          <h2 class="text-xl font-semibold mb-2">Jumlah Buku</h2>
+          <p class="text-3xl font-bold text-brown">{{ \App\Models\Buku::count() }}</p>
         </div>
-        <div class="bg-brown p-6 rounded-lg shadow text-center text-white">
-          <h2 class="text-xl font-semibold mb-2">Jumlah Kategori Buku</h2>
-          <p class="text-4xl font-bold">{{ \App\Models\KategoriBuku::count() }}</p>
+        <div class="bg-white p-6 rounded shadow">
+          <h2 class="text-xl font-semibold mb-2">Jumlah Anggota</h2>
+          <p class="text-3xl font-bold text-brown">{{ \App\Models\Anggota::count() }}</p>
+        </div>
+        <div class="bg-white p-6 rounded shadow">
+          <h2 class="text-xl font-semibold mb-2">Peminjaman Aktif</h2>
+          <p class="text-3xl font-bold text-brown">{{ $jumlahPeminjamanAktif ?? '-' }}</p>
         </div>
       </div>
 
-    </div>
+    </main>
   </div>
 
   <script>

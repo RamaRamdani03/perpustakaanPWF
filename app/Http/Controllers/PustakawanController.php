@@ -18,8 +18,8 @@ class PustakawanController extends Controller
         $data = $request->validate([
             'id_admin' => 'required|exists:admins,id_admin',
             'nama_pustaka' => 'required',
-            'usr_pustaka' => 'required|unique:pustakawans',
-            'pw_pustaka' => 'required',
+            'username' => 'required|unique:pustakawans',
+            'password' => 'required',
             'no_tlp_pustaka' => 'required',
             'alamat_pustaka' => 'required',
         ]);
@@ -32,12 +32,18 @@ class PustakawanController extends Controller
         return Pustakawan::with('admin')->findOrFail($id);
     }
 
+    public function edit($id)
+    {
+        $pustakawan = Pustakawan::findOrFail($id);
+        return view('admin.pustakawan.edit', compact('pustakawan'));
+    }
+
     public function update(Request $request, $id)
     {
         $p = Pustakawan::findOrFail($id);
         $p->update([
             'nama_pustaka' => $request->nama_pustaka,
-            'pw_pustaka' => Hash::make($request->pw_pustaka),
+            'password' => Hash::make($request->password),
             'no_tlp_pustaka' => $request->no_tlp_pustaka,
             'alamat_pustaka' => $request->alamat_pustaka,
         ]);

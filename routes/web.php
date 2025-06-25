@@ -1,26 +1,55 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;  
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\Admin\PustakawanController;
+use App\Http\Controllers\Admin\KategoriController;
+use App\Http\Controllers\Pustakawan\BukuController;
+use App\Http\Controllers\Pustakawan\AnggotaController;
+use App\Http\Controllers\Pustakawan\PeminjamanBukuController;
 
+// Login routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-// Halaman root redirect berdasarkan role
+// Halaman root: redirect sesuai guard
 Route::get('/', function () {
-    if (auth()->check()) {
-        return redirect('/' . auth()->user()->role->name . '/dashboard');
+    if (Auth::guard('admin')->check()) {
+        return redirect('/admin/dashboard');
+    } elseif (Auth::guard('pustakawan')->check()) {
+        return redirect('/pustakawan/dashboard');
+    } elseif (Auth::guard('anggota')->check()) {
+        return redirect('/anggota/dashboard');
     }
     return redirect()->route('login');
 });
 
-// Dashboard masing-masing role
-Route::middleware(['auth', 'role:admin'])
-    ->get('/admin/dashboard', fn() => view('admin.dashboard'));
+// Admin routes
+Route::prefix('admin')->middleware('auth:admin')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    });
 
-Route::middleware(['auth', 'role:pustakawan'])
-    ->get('/pustakawan/dashboard', fn() => view('pustakawan.dashboard'));
+    Route::resource('pustakawan', PustakawanController::class);
+    Route::resource('kategori', KategoriController::class);
+});
 
-Route::middleware(['auth', 'role:anggota'])
-    ->get('/anggota/dashboard', fn() => view('anggota.dashboard'));
+// Pustakawan routes
+Route::prefix('pustakawan')->middleware('auth:pustakawan')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('pustakawan.dashboard');
+    });
+
+    Route::resource('buku', BukuController::class);
+    Route::resource('anggota', AnggotaController::class);
+    Route::resource('peminjaman', PeminjamanBukuController::class);
+});
+
+// Anggota routes
+Route::prefix('anggota')->middleware('auth:anggota')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('anggota.dashboard');
+    });
+});

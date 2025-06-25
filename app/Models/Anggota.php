@@ -14,7 +14,15 @@ class Anggota extends Authenticatable implements JWTSubject
     protected $table = 'anggotas';
     protected $primaryKey = 'id_anggota';
 
-    protected $fillable = ['id_pustakawan', 'username', 'password'];
+    protected $fillable = [
+        'id_pustakawan',
+        'nama_anggota',
+        'username',
+        'password',
+        'no_tlp_anggota',
+        'alamat_anggota',
+    ];
+
     protected $hidden = ['password'];
 
     public function pustakawan()

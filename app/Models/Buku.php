@@ -6,6 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Buku extends Model
 {
+    protected $table = 'bukus';
+    protected $primaryKey = 'id_buku';
+
+    protected $fillable = [
+        'judul_buku',
+        'id_kategori',
+        'penulis',
+        'penerbit',
+        'tahun_terbit',
+    ];
+
     public function kategori()
     {
         return $this->belongsTo(KategoriBuku::class, 'id_kategori');

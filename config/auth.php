@@ -35,16 +35,38 @@ return [
     |
     */
 
-    'guards' => [
+   'guards' => [
+        // Guard untuk Admin (login via web)
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
+
+        // Guard untuk Pustakawan (login via web)
+        'pustakawan' => [
+            'driver' => 'session',
+            'provider' => 'pustakawans',
+        ],
+
+        // Guard untuk Anggota (login via web)
+        'anggota' => [
+            'driver' => 'session',
+            'provider' => 'anggotas',
+        ],
+
+        // Kalau kamu tetap butuh default web login untuk testing atau fallback:
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'admins', // atau bisa diganti ke 'pustakawans' sesuai keperluan
         ],
+
+        // Guard untuk API dengan JWT (opsional, jika pakai jwt-auth)
         'api' => [
             'driver' => 'jwt',
-            'provider' => 'users',
+            'provider' => 'admins', // ganti sesuai model API-mu
         ],
     ],
+
 
     /*
     |--------------------------------------------------------------------------

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -6,39 +7,47 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    public function username()
-    {
-        return 'name'; 
-    }
-
     public function showLoginForm()
     {
-        return view('auth.login'); // Blade form
+        return view('auth.login'); // Form login
     }
 
     public function login(Request $request)
     {
-        $credentials = $request->only('name', 'password');
+        $credentials = $request->only('username', 'password');
 
-        if (Auth::guard('web')->attempt($credentials)) {
+        // Login sebagai admin
+        if (Auth::guard('admin')->attempt($credentials)) {
             $request->session()->regenerate();
-
-            $role = Auth::user()->role->name;
-
-            return match ($role) {
-                'admin' => redirect('/admin/dashboard'),
-                'pustakawan' => redirect('/pustakawan/dashboard'),
-                'anggota' => redirect('/anggota/dashboard'),
-                default => abort(403),
-            };
+            return redirect('/admin/dashboard');
         }
 
-        return back()->withErrors(['name' => 'Nama atau password salah.']);
+        // Login sebagai pustakawan
+        if (Auth::guard('pustakawan')->attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect('/pustakawan/dashboard');
+        }
+
+        // Login sebagai anggota
+        if (Auth::guard('anggota')->attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect('/anggota/dashboard');
+        }
+
+        return back()->withErrors([
+            'login' => 'Username atau password salah.',
+        ]);
     }
 
     public function logout(Request $request)
     {
-        Auth::guard('web')->logout();
+        // Logout dari semua guard yang mungkin aktif
+        foreach (['admin', 'pustakawan', 'anggota'] as $guard) {
+            if (Auth::guard($guard)->check()) {
+                Auth::guard($guard)->logout();
+            }
+        }
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
