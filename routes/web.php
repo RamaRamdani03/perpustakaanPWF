@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;  
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Pustakawan\PustakawanDashboardController;
 use App\Http\Controllers\Admin\PustakawanController;
 use App\Http\Controllers\Admin\KategoriController;
 use App\Http\Controllers\Pustakawan\BukuController;
@@ -28,9 +30,7 @@ Route::get('/', function () {
 
 // Admin routes
 Route::prefix('admin')->middleware('auth:admin')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    });
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
     Route::resource('pustakawan', PustakawanController::class);
     Route::resource('kategori', KategoriController::class);
@@ -38,9 +38,7 @@ Route::prefix('admin')->middleware('auth:admin')->group(function () {
 
 // Pustakawan routes
 Route::prefix('pustakawan')->middleware('auth:pustakawan')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('pustakawan.dashboard');
-    });
+    Route::get('/dashboard', [PustakawanDashboardController::class, 'index'])->name('pustakawan.dashboard');
 
     Route::resource('buku', BukuController::class);
     Route::resource('anggota', AnggotaController::class);

@@ -66,15 +66,15 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="bg-white p-6 rounded shadow">
           <h2 class="text-xl font-semibold mb-2">Jumlah Buku</h2>
-          <p class="text-3xl font-bold text-brown">{{ \App\Models\Buku::count() }}</p>
+          <p class="text-3xl font-bold text-brown">{{ $jumlahBuku }}</p>
         </div>
         <div class="bg-white p-6 rounded shadow">
           <h2 class="text-xl font-semibold mb-2">Jumlah Anggota</h2>
-          <p class="text-3xl font-bold text-brown">{{ \App\Models\Anggota::count() }}</p>
+          <p class="text-3xl font-bold text-brown">{{ $jumlahAnggota }}</p>
         </div>
         <div class="bg-white p-6 rounded shadow">
           <h2 class="text-xl font-semibold mb-2">Peminjaman Aktif</h2>
-          <p class="text-3xl font-bold text-brown">{{ $jumlahPeminjamanAktif ?? '-' }}</p>
+          <p class="text-3xl font-bold text-brown">{{ $jumlahAnggota }}</p>
         </div>
       </div>
 

@@ -44,7 +44,7 @@
     <h1 class="text-xl font-semibold text-gray-800 mb-5 text-center">Tambah Buku</h1>
 
     <div class="bg-white p-5 rounded-lg shadow-md border border-gray-200">
-      <form action="{{ route('buku.store') }}" method="POST" class="space-y-3 text-sm">
+      <form method="POST" action="{{ route('buku.store') }}" enctype="multipart/form-data" class="space-y-3 text-sm">
         @csrf
 
         <div>
@@ -75,6 +75,12 @@
         <div>
           <label class="block text-gray-700 font-medium text-xs">Tahun Terbit</label>
           <input type="number" name="tahun_terbit" min="1000" max="9999" class="w-full px-2 py-1 border rounded text-xs focus:outline-none focus:ring-1 focus:ring-amber-300" required>
+        </div>
+
+        <!-- ✅ Input Upload Gambar -->
+        <div>
+          <label class="block text-gray-700 font-medium text-xs">Gambar Buku</label>
+          <input type="file" name="cover" accept="image/*" class="w-full px-2 py-1 border rounded text-xs focus:outline-none focus:ring-1 focus:ring-amber-300">
         </div>
 
         <!-- Tombol Simpan -->

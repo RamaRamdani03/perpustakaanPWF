@@ -25,7 +25,7 @@
         <a href="{{ url('/pustakawan/dashboard') }}" class="block px-3 py-2 rounded bg-brown-hover">Dashboard</a>
         <a href="{{ route('buku.index') }}" class="block px-3 py-2 rounded hover:bg-brown-hover">Buku</a>
         <a href="{{ route('anggota.index') }}" class="block px-3 py-2 rounded bg-gray-700">Anggota</a>
-        <a href="#" class="block px-3 py-2 rounded hover:bg-brown-hover">Peminjaman</a>
+        <a href="{{ route('peminjaman.index') }}" class="block px-3 py-2 rounded hover:bg-brown-hover">Peminjaman</a>
         <a href="#" class="block px-3 py-2 rounded hover:bg-brown-hover">Pengembalian</a>
       </nav>
     </aside>

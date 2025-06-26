@@ -17,7 +17,7 @@ class BukuController extends Controller
 
     public function create()
     {
-        $kategoris = \App\Models\KategoriBuku::all();
+        $kategoris = KategoriBuku::all();
         return view('pustakawan.buku.create', compact('kategoris'));
     }
 
@@ -29,7 +29,12 @@ class BukuController extends Controller
             'penulis'       => 'required|string|max:255',
             'penerbit'      => 'required|string|max:255',
             'tahun_terbit'  => 'required|digits:4|integer|min:1900|max:' . (date('Y') + 1),
+            'cover'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        if ($request->hasFile('cover')) {
+            $data['cover'] = file_get_contents($request->file('cover')->getRealPath());
+        }
 
         Buku::create($data);
         return redirect()->route('buku.index')->with('success', 'Buku berhasil ditambahkan');
@@ -45,19 +50,24 @@ class BukuController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'judul_buku' => 'required|string',
-            'id_kategori' => 'required|exists:kategori_bukus,id_kategori',
-            'penulis' => 'required|string',
-            'penerbit' => 'required|string',
-            'tahun_terbit' => 'required|digits:4|integer',
+            'judul_buku'    => 'required|string',
+            'id_kategori'   => 'required|exists:kategori_bukus,id_kategori',
+            'penulis'       => 'required|string',
+            'penerbit'      => 'required|string',
+            'tahun_terbit'  => 'required|digits:4|integer',
+            'cover'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $buku = Buku::findOrFail($id);
+
+        if ($request->hasFile('cover')) {
+            $validated['cover'] = file_get_contents($request->file('cover')->getRealPath());
+        }
+
         $buku->update($validated);
 
         return redirect()->route('buku.index')->with('success', 'Buku berhasil diupdate.');
     }
-
 
     public function destroy($id)
     {

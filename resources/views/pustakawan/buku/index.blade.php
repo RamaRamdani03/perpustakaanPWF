@@ -18,14 +18,14 @@
       <div class="text-center">
         <img src="{{ asset('images/logoperpus.png') }}" alt="Logo Perpus" class="h-20 mx-auto mb-4" />
         <h2 class="text-xl font-bold">
-        {{ auth()->user()->nama_pustaka}}
+        {{ auth()->user()->nama_pustaka }}
         </h2>
       </div>
       <nav class="space-y-3">
         <a href="{{ url('/pustakawan/dashboard') }}" class="block px-3 py-2 rounded bg-brown-hover">Dashboard</a>
         <a href="{{ route('buku.index') }}" class="block px-3 py-2 rounded bg-gray-700">Buku</a>
         <a href="{{ route('anggota.index') }}" class="block px-3 py-2 rounded bg-brown-hover">Anggota</a>
-        <a href="#" class="block px-3 py-2 rounded bg-brown-hover">Peminjaman</a>
+        <a href="{{ route('peminjaman.index') }}" class="block px-3 py-2 rounded bg-brown-hover">Peminjaman</a>
         <a href="#" class="block px-3 py-2 rounded bg-brown-hover">Pengembalian</a>
       </nav>
     </aside>
@@ -73,6 +73,7 @@
         <table class="w-full table-auto border border-gray-300 text-sm">
           <thead class="bg-gray-100">
             <tr>
+              <th class="border px-6 py-3 text-left font-semibold text-gray-700">Cover</th>
               <th class="border px-6 py-3 text-left font-semibold text-gray-700">Judul</th>
               <th class="border px-6 py-3 text-left font-semibold text-gray-700">Kategori</th>
               <th class="border px-6 py-3 text-left font-semibold text-gray-700">Penulis</th>
@@ -84,6 +85,13 @@
           <tbody>
             @forelse($bukus as $buku)
               <tr class="hover:bg-gray-50">
+                <td class="border px-6 py-3">
+                  @if($buku->cover)
+                    <img src="data:image/jpeg;base64,{{ base64_encode($buku->cover) }}"  alt="Cover" class="w-16 h-20 object-cover rounded">
+                  @else
+                    <span class="text-xs text-gray-500">Tidak ada</span>
+                  @endif
+                </td>
                 <td class="border px-6 py-3">{{ $buku->judul_buku }}</td>
                 <td class="border px-6 py-3">{{ $buku->kategori->nama_kategori ?? '-' }}</td>
                 <td class="border px-6 py-3">{{ $buku->penulis }}</td>
@@ -96,7 +104,7 @@
               </tr>
             @empty
               <tr>
-                <td colspan="6" class="text-center text-gray-500 py-6">Belum ada data buku.</td>
+                <td colspan="7" class="text-center text-gray-500 py-6">Belum ada data buku.</td>
               </tr>
             @endforelse
           </tbody>
@@ -151,7 +159,7 @@
 
     function openDeleteModal(id) {
       const form = document.getElementById('deleteForm');
-      form.action = `/pustakawan/buku/${id}`; // Sesuaikan dengan route destroy
+      form.action = `/pustakawan/buku/${id}`;
       document.getElementById('deleteModal').classList.remove('hidden');
     }
 

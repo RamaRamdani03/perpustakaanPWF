@@ -43,7 +43,7 @@
     <h1 class="text-xl font-semibold text-gray-800 mb-5 text-center">Edit Buku</h1>
 
     <div class="bg-white p-5 rounded-lg shadow-md border border-gray-200">
-      <form action="{{ route('buku.update', $buku->id_buku) }}" method="POST" class="space-y-3 text-sm">
+      <form action="{{ route('buku.update', $buku->id_buku) }}" method="POST" enctype="multipart/form-data" class="space-y-3 text-sm">
         @csrf
         @method('PUT')
 
@@ -79,7 +79,22 @@
           <input type="number" name="tahun_terbit" min="1000" max="9999" value="{{ old('tahun_terbit', $buku->tahun_terbit) }}" class="w-full px-2 py-1 border rounded text-xs focus:outline-none focus:ring-1 focus:ring-amber-300" required>
         </div>
 
-        <!-- Tombol Simpan -->
+        <!-- ✅ Preview dan Upload Gambar -->
+        <div>
+          <label class="block text-gray-700 font-medium text-xs">Gambar Saat Ini</label>
+          @if($buku->cover)
+            <img src="data:image/jpeg;base64,{{ base64_encode($buku->cover) }}" alt="Gambar Buku" class="w-32 h-auto mt-1 mb-2 border rounded">
+          @else
+            <p class="text-xs text-gray-500 italic">Belum ada gambar</p>
+          @endif
+        </div>
+
+        <div>
+          <label class="block text-gray-700 font-medium text-xs">Ganti Gambar</label>
+          <input type="file" name="cover" accept="image/*" class="w-full px-2 py-1 border rounded text-xs focus:outline-none focus:ring-1 focus:ring-amber-300">
+        </div>
+
+        <!-- Tombol Update -->
         <div class="pt-1">
           <button type="submit" class="w-full bg-brown hover:opacity-90 text-white text-xs px-3 py-1.5 rounded shadow">Update</button>
         </div>

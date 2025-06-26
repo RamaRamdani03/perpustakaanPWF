@@ -15,6 +15,7 @@ class Buku extends Model
         'penulis',
         'penerbit',
         'tahun_terbit',
+        'cover',
     ];
 
     public function kategori()
