@@ -28,16 +28,16 @@
       </nav>
     </aside>
 
-    <!-- Main Content -->
+    <!-- Content -->
     <div id="main-content" class="flex-1 p-10 transition-all duration-300 relative">
-      <!-- Sidebar Toggle Button -->
+      <!-- Sidebar -->
       <button onclick="toggleSidebar()" class="absolute top-4 left-4 bg-dark-brown text-white p-2 rounded-md shadow-md z-20">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
 
-      <!-- User Dropdown -->
+      <!-- Dropdown logout -->
       <div class="absolute top-4 right-6">
         <div class="relative inline-block text-left">
           <button onclick="toggleDropdown()" class="flex items-center px-4 py-2 bg-brown text-white font-semibold rounded-md hover:opacity-90 shadow">
@@ -55,7 +55,7 @@
         </div>
       </div>
 
-      <!-- Page Title -->
+      <!-- Data Pengambalian -->
       <h1 class="text-3xl font-bold text-gray-800 mb-6 mt-12">Data Pengembalian</h1>
 
       <div class="bg-white rounded-lg shadow overflow-x-auto">
