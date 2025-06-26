@@ -12,7 +12,7 @@ class PustakawanDashboardController extends Controller
     {
         $jumlahBuku = Buku::count();
         $jumlahAnggota = Anggota::count();
-        $jumlahPeminjam = Peminjam::count();
+        $jumlahPeminjam = Peminjam::where('status_pinjam', 'accepted')->count();
 
         return view('pustakawan.dashboard', compact('jumlahBuku', 'jumlahAnggota', 'jumlahPeminjam'));
     }

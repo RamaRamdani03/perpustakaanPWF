@@ -26,7 +26,8 @@
         <a href="{{ route('buku.index') }}" class="block px-3 py-2 rounded bg-gray-700">Buku</a>
         <a href="{{ route('anggota.index') }}" class="block px-3 py-2 rounded bg-brown-hover">Anggota</a>
         <a href="{{ route('peminjaman.index') }}" class="block px-3 py-2 rounded bg-brown-hover">Peminjaman</a>
-        <a href="#" class="block px-3 py-2 rounded bg-brown-hover">Pengembalian</a>
+        <a href="{{ route('pengembalian.index') }}" class="block px-3 py-2 rounded bg-brown-hover">Pengembalian</a>
+        <a href="{{ route('pustakawan.kategori.index') }}" class="block px-3 py-2 rounded hover:bg-brown-hover">Kategori</a>
       </nav>
     </aside>
 
@@ -73,13 +74,13 @@
         <table class="w-full table-auto border border-gray-300 text-sm">
           <thead class="bg-gray-100">
             <tr>
-              <th class="border px-6 py-3 text-left font-semibold text-gray-700">Cover</th>
-              <th class="border px-6 py-3 text-left font-semibold text-gray-700">Judul</th>
-              <th class="border px-6 py-3 text-left font-semibold text-gray-700">Kategori</th>
-              <th class="border px-6 py-3 text-left font-semibold text-gray-700">Penulis</th>
-              <th class="border px-6 py-3 text-left font-semibold text-gray-700">Penerbit</th>
-              <th class="border px-6 py-3 text-left font-semibold text-gray-700">Tahun Terbit</th>
-              <th class="border px-6 py-3 text-center font-semibold text-gray-700">Aksi</th>
+              <th class="border px-4 py-2 text-center">Cover</th>
+              <th class="border px-4 py-2 text-center">Judul</th>
+              <th class="border px-4 py-2 text-center">Kategori</th>
+              <th class="border px-4 py-2 text-center">Penulis</th>
+              <th class="border px-4 py-2 text-center">Penerbit</th>
+              <th class="border px-4 py-2 text-center">Tahun Terbit</th>
+              <th class="border px-4 py-2 text-center">Aksi</th>
             </tr>
           </thead>
           <tbody>
@@ -92,14 +93,21 @@
                     <span class="text-xs text-gray-500">Tidak ada</span>
                   @endif
                 </td>
-                <td class="border px-6 py-3">{{ $buku->judul_buku }}</td>
-                <td class="border px-6 py-3">{{ $buku->kategori->nama_kategori ?? '-' }}</td>
-                <td class="border px-6 py-3">{{ $buku->penulis }}</td>
-                <td class="border px-6 py-3">{{ $buku->penerbit }}</td>
-                <td class="border px-6 py-3">{{ $buku->tahun_terbit }}</td>
-                <td class="border px-6 py-3 text-center space-x-3">
-                  <a href="{{ route('buku.edit', $buku->id_buku) }}" class="text-blue-600 hover:underline">Edit</a>
-                  <button onclick="openDeleteModal({{ $buku->id_buku }})" class="text-red-600 hover:underline">Hapus</button>
+                <td class="border px-6 py-3 text-center">{{ $buku->judul_buku }}</td>
+                <td class="border px-6 py-3 text-center">{{ $buku->kategori->nama_kategori ?? '-' }}</td>
+                <td class="border px-6 py-3 text-center">{{ $buku->penulis }}</td>
+                <td class="border px-6 py-3 text-center">{{ $buku->penerbit }}</td>
+                <td class="border px-6 py-3 text-center">{{ $buku->tahun_terbit }}</td>
+
+                <td class="border px-6 py-3 text-center space-x-2">
+                  <a href="{{ route('buku.edit', $buku->id_buku) }}"
+                    class="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 shadow">
+                    Edit
+                  </a>
+                  <button onclick="openDeleteModal({{ $buku->id_buku }})"
+                    class="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs font-medium rounded hover:bg-red-700 shadow">
+                    Hapus
+                  </button>
                 </td>
               </tr>
             @empty

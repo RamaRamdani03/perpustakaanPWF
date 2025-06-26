@@ -65,19 +65,22 @@
     </a>
 
     <div class="bg-white rounded-lg shadow overflow-x-auto">
-      <table class="w-full table-auto border border-gray-300">
+      <table class="w-full table-auto border border-gray-300 text-center">
         <thead class="bg-gray-100">
           <tr>
-            <th class="border px-4 py-2">Nama Kategori</th>
-            <th class="border px-4 py-2">Aksi</th>
+            <th class="border px-4 py-2 text-center">Nama Kategori</th>
+            <th class="border px-4 py-2 text-center">Aksi</th>
           </tr>
         </thead>
         <tbody>
           @forelse($kategoris as $kategori)
             <tr class="hover:bg-gray-50">
-              <td class="border px-4 py-2">{{ $kategori->nama_kategori }}</td>
-              <td class="border px-4 py-2 space-x-2">
-                <button onclick="openDeleteModal({{ $kategori->id_kategori }})" class="text-red-600 hover:underline">Hapus</button>
+              <td class="border px-4 py-2 text-center">{{ $kategori->nama_kategori }}</td>
+              <td class="border px-4 py-2 text-center">
+                <button onclick="openDeleteModal({{ $kategori->id_kategori }})"
+                    class="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs font-medium rounded hover:bg-red-700 shadow">
+                    Hapus
+                </button>
               </td>
             </tr>
           @empty

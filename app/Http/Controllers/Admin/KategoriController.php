@@ -23,7 +23,6 @@ class KategoriController extends Controller
     {
         $data = $request->validate([
             'nama_kategori' => 'required|unique:kategori_bukus,nama_kategori',
-            'deskripsi' => 'nullable',
         ]);
 
         KategoriBuku::create($data);

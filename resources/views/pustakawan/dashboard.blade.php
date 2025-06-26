@@ -27,7 +27,8 @@
         <a href="{{ route('buku.index') }}" class="block px-3 py-2 rounded hover:bg-brown-hover">Buku</a>
         <a href="{{ route('anggota.index') }}" class="block px-3 py-2 rounded hover:bg-brown-hover">Anggota</a>
         <a href="{{ route('peminjaman.index') }}" class="block px-3 py-2 rounded hover:bg-brown-hover">Peminjaman</a>
-        <a href="#" class="block px-3 py-2 rounded hover:bg-brown-hover">Pengembalian</a>
+        <a href="{{ route('pengembalian.index') }}" class="block px-3 py-2 rounded hover:bg-brown-hover">Pengembalian</a>
+        <a href="{{ route('pustakawan.kategori.index') }}" class="block px-3 py-2 rounded hover:bg-brown-hover">Kategori</a>
       </nav>
     </aside>
 
@@ -74,7 +75,7 @@
         </div>
         <div class="bg-white p-6 rounded shadow">
           <h2 class="text-xl font-semibold mb-2">Peminjaman Aktif</h2>
-          <p class="text-3xl font-bold text-brown">{{ $jumlahAnggota }}</p>
+          <p class="text-3xl font-bold text-brown">{{ $jumlahPeminjam }}</p>
         </div>
       </div>
 

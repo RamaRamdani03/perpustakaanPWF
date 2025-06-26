@@ -3,59 +3,50 @@
 namespace App\Http\Controllers\Pustakawan;
 
 use App\Http\Controllers\Controller;
-use App\Models\Pengembalian;
 use App\Models\Peminjam;
+use App\Models\Pengembalian;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 
-class PengembalianController extends Controller
+class PengembalianBukuController extends Controller
 {
+    // Tampilkan daftar peminjaman dengan status 'done'
     public function index()
     {
-        $pengembalians = Pengembalian::with('peminjam')->latest()->get();
-        return view('pustakawan.pengembalian.index', compact('pengembalians'));
+        $peminjams = Peminjam::with(['anggota', 'buku', 'pengembalian'])
+            ->where('status_pinjam', 'done')
+            ->latest()
+            ->get();
+
+        return view('pustakawan.pengembalian.index', compact('peminjams'));
     }
 
-    public function create($id_pinjam)
+    // Tandai selesai: menyimpan ke tabel pengembalian
+    public function update(Request $request, $id_pinjam)
     {
         $peminjam = Peminjam::with('anggota', 'buku')->findOrFail($id_pinjam);
-        return view('pustakawan.pengembalian.create', compact('peminjam'));
-    }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'id_pinjam'     => 'required|exists:peminjams,id_pinjam',
-            'tgl_kembali'   => 'required|date',
-        ]);
-
-        $peminjam = Peminjam::findOrFail($request->id_pinjam);
-
-        // Hitung denda (misalnya: 1000 per hari keterlambatan)
-        $batasPinjam = Carbon::parse($peminjam->tgl_pinjam)->addDays(7); // asumsi 7 hari batas peminjaman
-        $tglKembali = Carbon::parse($request->tgl_kembali);
-
-        $selisihHari = $tglKembali->diffInDays($batasPinjam, false); // nilai bisa negatif
+        $tgl_kembali = $peminjam->updated_at;
+        $batas_kembali = $peminjam->batas_kembali;
 
         $denda = 0;
-        $status = 'selesai';
-        if ($selisihHari > 0) {
-            $denda = $selisihHari * 1000; // contoh: denda 1000 per hari
-            $status = 'terlambat';
+        $status_kembali = 'selesai';
+
+        if ($tgl_kembali->gt($batas_kembali)) {
+            $selisih = $tgl_kembali->diffInDays($batas_kembali);
+            $denda = $selisih * 1000;
+            $status_kembali = 'terlambat';
         }
 
-        // Simpan pengembalian
-        Pengembalian::create([
-            'id_pinjam' => $peminjam->id_pinjam,
-            'tgl_kembali' => $request->tgl_kembali,
-            'denda' => $denda,
-            'status_kembali' => $status,
-        ]);
+        // Cegah duplikasi
+        Pengembalian::updateOrCreate(
+            ['id_pinjam' => $id_pinjam],
+            [
+                'tgl_kembali' => $tgl_kembali,
+                'denda' => $denda,
+                'status_kembali' => $status_kembali
+            ]
+        );
 
-        // Update status peminjam
-        $peminjam->status_pinjam = 'dikembalikan';
-        $peminjam->save();
-
-        return redirect()->route('peminjaman.index')->with('success', 'Pengembalian berhasil diproses.');
+        return redirect()->back()->with('success', 'Pengembalian berhasil ditandai.');
     }
 }

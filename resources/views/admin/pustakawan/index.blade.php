@@ -66,26 +66,32 @@
 
       <!-- Tabel Data -->
       <div class="bg-white rounded-lg shadow overflow-x-auto">
-        <table class="w-full table-auto border border-gray-300 text-sm">
+        <table class="w-full table-auto border border-gray-300 text-sm text-center">
           <thead class="bg-gray-100">
             <tr>
-              <th class="border px-6 py-3 text-left font-semibold text-gray-700">Nama</th>
-              <th class="border px-6 py-3 text-left font-semibold text-gray-700">Username</th>
-              <th class="border px-6 py-3 text-left font-semibold text-gray-700">Nomor Telepon</th>
-              <th class="border px-6 py-3 text-left font-semibold text-gray-700">Alamat</th>
-              <th class="border px-6 py-3 text-center font-semibold text-gray-700">Aksi</th>
+              <th class="border px-4 py-2 text-center">Nama</th>
+              <th class="border px-4 py-2 text-center">Username</th>
+              <th class="border px-4 py-2 text-center">Nomor Telepon</th>
+              <th class="border px-4 py-2 text-center">Alamat</th>
+              <th class="border px-4 py-2 text-center">Aksi</th>
             </tr>
           </thead>
           <tbody>
             @forelse($pustakawans as $p)
               <tr class="hover:bg-gray-50">
-                <td class="border px-6 py-3">{{ $p->nama_pustaka }}</td>
-                <td class="border px-6 py-3">{{ $p->username }}</td>
-                <td class="border px-6 py-3">{{ $p->no_tlp_pustaka ?? 'Belum diisi' }}</td>
-                <td class="border px-6 py-3">{{ $p->alamat_pustaka ?? 'Belum diisi' }}</td>
-                <td class="border px-6 py-3 text-center space-x-3">
-                  <a href="{{ route('pustakawan.edit', $p->id_pustakawan) }}" class="text-blue-600 hover:underline">Edit</a>
-                  <button onclick="openDeleteModal({{ $p->id_pustakawan }})" class="text-red-600 hover:underline">Hapus</button>
+                <td class="border px-6 py-3 text-center">{{ $p->nama_pustaka }}</td>
+                <td class="border px-6 py-3 text-center">{{ $p->username }}</td>
+                <td class="border px-6 py-3 text-center">{{ $p->no_tlp_pustaka ?? 'Belum diisi' }}</td>
+                <td class="border px-6 py-3 text-center">{{ $p->alamat_pustaka ?? 'Belum diisi' }}</td>
+                <td class="border px-6 py-3 text-center space-x-2">
+                  <a href="{{ route('pustakawan.edit', $p->id_pustakawan) }}"
+                    class="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 shadow">
+                    Edit
+                  </a>
+                  <button onclick="openDeleteModal({{ $p->id_pustakawan }})"
+                    class="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs font-medium rounded hover:bg-red-700 shadow">
+                    Hapus
+                  </button>
                 </td>
               </tr>
             @empty

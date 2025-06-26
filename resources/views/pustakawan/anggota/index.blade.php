@@ -26,7 +26,8 @@
         <a href="{{ route('buku.index') }}" class="block px-3 py-2 rounded hover:bg-brown-hover">Buku</a>
         <a href="{{ route('anggota.index') }}" class="block px-3 py-2 rounded bg-gray-700">Anggota</a>
         <a href="{{ route('peminjaman.index') }}" class="block px-3 py-2 rounded hover:bg-brown-hover">Peminjaman</a>
-        <a href="#" class="block px-3 py-2 rounded hover:bg-brown-hover">Pengembalian</a>
+        <a href="{{ route('pengembalian.index') }}" class="block px-3 py-2 rounded hover:bg-brown-hover">Pengembalian</a>
+        <a href="{{ route('pustakawan.kategori.index') }}" class="block px-3 py-2 rounded hover:bg-brown-hover">Kategori</a>
       </nav>
     </aside>
 
@@ -72,23 +73,29 @@
         <table class="w-full table-auto border border-gray-300 text-sm">
           <thead class="bg-gray-100">
             <tr>
-              <th class="border px-6 py-3 text-left font-semibold text-gray-700">Nama</th>
-              <th class="border px-6 py-3 text-left font-semibold text-gray-700">Username</th>
-              <th class="border px-6 py-3 text-left font-semibold text-gray-700">Telepon</th>
-              <th class="border px-6 py-3 text-left font-semibold text-gray-700">Alamat</th>
-              <th class="border px-6 py-3 text-center font-semibold text-gray-700">Aksi</th>
+              <th class="border px-4 py-2 text-center">Nama</th>
+              <th class="border px-4 py-2 text-center">Username</th>
+              <th class="border px-4 py-2 text-center">Telepon</th>
+              <th class="border px-4 py-2 text-center">Alamat</th>
+              <th class="border px-4 py-2 text-center">Aksi</th>
             </tr>
           </thead>
           <tbody>
             @forelse($anggotas as $anggota)
               <tr class="hover:bg-gray-50">
-                <td class="border px-6 py-3">{{ $anggota->nama_anggota }}</td>
-                <td class="border px-6 py-3">{{ $anggota->username }}</td>
-                <td class="border px-6 py-3">{{ $anggota->no_tlp_anggota }}</td>
-                <td class="border px-6 py-3">{{ $anggota->alamat_anggota }}</td>
-                <td class="border px-6 py-3 text-center space-x-3">
-                  <a href="{{ route('anggota.edit', $anggota->id_anggota) }}" class="text-blue-600 hover:underline">Edit</a>
-                  <button onclick="openDeleteModal({{ $anggota->id_anggota }})" class="text-red-600 hover:underline">Hapus</button>
+                <td class="border px-6 py-3 text-center">{{ $anggota->nama_anggota }}</td>
+                <td class="border px-6 py-3 text-center">{{ $anggota->username }}</td>
+                <td class="border px-6 py-3 text-center">{{ $anggota->no_tlp_anggota }}</td>
+                <td class="border px-6 py-3 text-center">{{ $anggota->alamat_anggota }}</td>
+                <td class="border px-6 py-3 text-center">
+                  <a href="{{ route('anggota.edit', $anggota->id_anggota) }}"
+                    class="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 shadow">
+                    Edit
+                  </a>
+                  <button onclick="openDeleteModal({{ $anggota->id_anggota }})"
+                    class="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs font-medium rounded hover:bg-red-700 shadow">
+                    Hapus
+                  </button>
                 </td>
               </tr>
             @empty
