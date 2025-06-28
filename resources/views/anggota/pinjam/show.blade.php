@@ -22,7 +22,7 @@
     <div class="flex justify-between items-center p-6">
       <div class="flex items-center space-x-4">
         <img src="{{ asset('images/logoperpus.png') }}" class="h-12" alt="Logo">
-        <span class="text-lg font-bold text-gray-800">Perpustakaan Online</span>
+        <span class="text-lg font-bold text-gray-800">Perpustakaan Teras Baca</span>
       </div>
       <div class="flex items-center space-x-6">
         <a href="{{ route('anggota.pinjam.form') }}" class="text-gray-900 font-semibold hover:underline">Pinjam Buku</a>

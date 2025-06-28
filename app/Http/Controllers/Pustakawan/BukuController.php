@@ -11,7 +11,7 @@ class BukuController extends Controller
 {
     public function index()
     {
-        $bukus = Buku::with('kategori')->get(); 
+        $bukus = Buku::with('kategori')->get();
         return view('pustakawan.buku.index', compact('bukus'));
     }
 
@@ -33,12 +33,17 @@ class BukuController extends Controller
         ]);
 
         if ($request->hasFile('cover')) {
-            $data['cover'] = file_get_contents($request->file('cover')->getRealPath());
+            $file = $request->file('cover');
+            $namaFile = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('covers'), $namaFile); // Simpan file ke folder public/covers
+            $data['cover'] = $namaFile; // Hanya simpan nama file ke database
         }
 
         Buku::create($data);
+
         return redirect()->route('buku.index')->with('success', 'Buku berhasil ditambahkan');
     }
+
 
     public function edit($id)
     {
@@ -50,24 +55,28 @@ class BukuController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'judul_buku'    => 'required|string',
+            'judul_buku'    => 'required|string|max:255',
             'id_kategori'   => 'required|exists:kategori_bukus,id_kategori',
-            'penulis'       => 'required|string',
-            'penerbit'      => 'required|string',
-            'tahun_terbit'  => 'required|digits:4|integer',
+            'penulis'       => 'required|string|max:255',
+            'penerbit'      => 'required|string|max:255',
+            'tahun_terbit'  => 'required|digits:4|integer|min:1900|max:' . (date('Y') + 1),
             'cover'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $buku = Buku::findOrFail($id);
 
         if ($request->hasFile('cover')) {
-            $validated['cover'] = file_get_contents($request->file('cover')->getRealPath());
+            $file = $request->file('cover');
+            $namaFile = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('covers'), $namaFile);
+            $validated['cover'] = $namaFile;
         }
 
         $buku->update($validated);
 
         return redirect()->route('buku.index')->with('success', 'Buku berhasil diupdate.');
     }
+
 
     public function destroy($id)
     {

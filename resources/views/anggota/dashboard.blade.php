@@ -9,92 +9,112 @@
     .bg-dark-brown { background-color: #353333; }
     .bg-brown-hover:hover { background-color: #4a4a4a; }
     .bg-brown { background-color: #5c4033; }
+    .blur-overlay {
+      backdrop-filter: blur(8px);
+      background-color: rgba(255, 255, 255, 0.4); /* Putih semi-transparan */
+    }
   </style>
 </head>
-<body class="bg-amber-100 font-sans">
+<body class="bg-gray-100 font-sans min-h-screen flex flex-col">
 
-<div class="flex transition-all duration-300 min-h-screen">
-  <!-- Sidebar -->
-  <aside id="sidebar" class="w-64 bg-dark-brown text-white flex flex-col p-6 min-h-screen transition-all duration-300">
-    <!-- Profil -->
-    <div class="text-center">
-      <img src="{{ asset('images/logoperpus.png') }}" alt="Logo Perpus" class="h-20 mx-auto mb-4" />
-      <h2 class="text-xl font-bold">{{ auth()->user()->nama }}</h2>
-    </div>
+<!-- Header -->
+<header class="bg-white shadow flex justify-between items-center px-6 py-4">
+  <div class="flex items-center space-x-2">
+    <img src="{{ asset('images/logoperpus.png') }}" alt="Logo" class="h-10">
+    <h1 class="text-xl font-bold">Perpustakaan Teras Baca</h1>
+  </div>
 
-    <!-- Navigasi -->
-    <nav class="space-y-3 mt-6 flex-grow">
-      <a href="{{ url('/anggota/dashboard') }}" class="block px-3 py-2 rounded {{ request()->is('anggota/dashboard') ? 'bg-gray-700' : 'hover:bg-brown-hover' }}">Dashboard</a>
-      <a href="{{ route('anggota.pinjam.riwayat') }}" class="block px-3 py-2 rounded {{ request()->routeIs('anggota.pinjam.riwayat') ? 'bg-gray-700' : 'hover:bg-brown-hover' }}">Peminjaman Buku</a>
-    </nav>
-
-    <!-- Logout -->
-    <form method="POST" action="{{ route('logout') }}">
-      @csrf
-      <button type="submit" class="w-full bg-red-600 hover:bg-red-700 py-2 rounded text-white font-semibold transition">
-        Logout
+  <div class="flex items-center space-x-4">
+    <a href="{{ route('anggota.pinjam.riwayat') }}" class="text-sm font-medium hover:underline">Pinjam Buku</a>
+    
+    <!-- Dropdown User -->
+    <div class="relative">
+      <button onclick="toggleDropdown()" class="flex items-center text-sm font-medium hover:underline">
+         {{ auth('anggota')->user()->nama_anggota ?? 'Anggota' }}
+        <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
       </button>
-    </form>
-  </aside>
+      <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded shadow-md z-10">
+        <form method="POST" action="{{ route('logout') }}">
+          @csrf
+          <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
 
-  <!-- Main Content -->
-  <main id="main-content" class="flex-1 p-10 transition-all duration-300 relative">
+<!-- Hero Section dengan Blur Putih Kiri -->
+<section class="relative bg-cover bg-center h-64" style="background-image: url('{{ asset('images/perpus.jpg') }}');">
+  <div class="absolute inset-0 flex items-end justify-start px-8 pb-6">
+    <div class="blur-overlay px-8 py-4 rounded-lg text-gray-800 max-w-md">
+      <h2 class="text-2xl font-bold mb-1">Selamat Datang di</h2>
+      <h3 class="text-3xl font-extrabold mb-2">Perpustakaan Teras Baca</h3>
+      <p class="text-base">Tersedia Berbagai Banyak Buku, Ayo Pilih Buku Favorit Kamu 😊</p>
+    </div>
+  </div>
+</section>
 
-    <!-- Sidebar Toggle -->
-    <button onclick="toggleSidebar()" class="absolute top-4 left-4 bg-dark-brown text-white p-2 rounded-md shadow-md z-20">
+<!-- Daftar Buku Carousel -->
+<section class="bg-white py-8">
+  <h2 class="text-center text-xl font-semibold mb-6">--- Daftar Buku ---</h2>
+  <div class="relative max-w-5xl mx-auto flex items-center">
+    
+    <!-- Tombol Kiri -->
+    <button onclick="scrollLeft()" class="absolute left-0 bg-white p-2 rounded-full shadow hover:bg-gray-100 z-10">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
       </svg>
     </button>
 
-    <!-- Hero Banner -->
-    <div class="relative bg-cover bg-center h-64 rounded-lg mb-8" style="background-image: url('{{ asset('images/perpus-banner.jpg') }}');">
-      <div class="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center px-10 text-white">
-        <h1 class="text-3xl font-bold mb-2">Selamat Datang di</h1>
-        <h2 class="text-4xl font-extrabold mb-4">Perpustakaan Online</h2>
-        <p class="text-lg">Tersedia Berbagai Banyak Buku, Ayo Pilih Buku Favorit Kamu 📚✨</p>
+    <!-- Daftar Buku Scroll -->
+    <div id="bookContainer" class="flex overflow-x-auto space-x-6 px-12 pb-4 scrollbar-hide">
+      @foreach($books as $book)
+      <div class="flex-shrink-0 w-40 text-center">
+        @if($book->cover)
+          <img src="{{ asset('covers/' . $book->cover) }}" alt="{{ $book->judul_buku }}" class="h-56 object-cover rounded-xl shadow-md">
+        @else
+          <img src="{{ asset('images/default-cover.jpg') }}" alt="{{ $book->judul_buku }}" class="h-56 object-cover rounded-xl shadow-md">
+        @endif
+        <p class="mt-2 text-sm font-medium">{{ $book->judul_buku }}</p>
       </div>
+      @endforeach
     </div>
 
-    <!-- Daftar Buku -->
-    <h2 class="text-center text-xl font-semibold mb-4">--- Daftar Buku ---</h2>
-
-    <div class="overflow-x-auto px-2">
-      <div class="flex space-x-6 pb-4 snap-x snap-mandatory">
-       @foreach($books as $book)
-  <div class="flex-shrink-0 sm:w-40 w-32 snap-center">
-    <div>
-      @if($book->cover)
-        <img src="data:image/jpeg;base64,{{ base64_encode($book->cover) }}"
-             alt="{{ $book->judul_buku }}"
-             class="w-full h-56 object-cover rounded-xl shadow-md">
-      @else
-        <img src="{{ asset('images/default-cover.jpg') }}"
-             alt="{{ $book->judul_buku }}"
-             class="w-full h-56 object-cover rounded-xl shadow-md">
-      @endif
-      <p class="mt-2 text-center text-sm font-medium">{{ $book->judul_buku }}</p>
-    </div>
+    <!-- Tombol Kanan -->
+    <button onclick="scrollRight()" class="absolute right-0 bg-white p-2 rounded-full shadow hover:bg-gray-100 z-10">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
   </div>
-@endforeach
+</section>
 
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="mt-10 text-center text-gray-600">
-      <hr class="my-4">
-      <p>© Perpustakaan Online</p>
-    </div>
-  </main>
-</div>
+<!-- Footer -->
+<footer class="bg-gray-100 border-t py-4 text-center text-sm text-gray-600">
+  © Perpustakaan Teras baca
+</footer>
 
 <script>
-  let sidebarVisible = true;
-  function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    sidebar.classList.toggle('-ml-64');
-    sidebarVisible = !sidebarVisible;
+  function toggleDropdown() {
+    document.getElementById('dropdownMenu').classList.toggle('hidden');
+  }
+
+  window.addEventListener('click', function(e) {
+    const button = document.querySelector('button[onclick="toggleDropdown()"]');
+    const dropdown = document.getElementById('dropdownMenu');
+    if (!button.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.classList.add('hidden');
+    }
+  });
+
+  function scrollLeft() {
+    document.getElementById('bookContainer').scrollBy({ left: -200, behavior: 'smooth' });
+  }
+  
+  function scrollRight() {
+    document.getElementById('bookContainer').scrollBy({ left: 200, behavior: 'smooth' });
   }
 </script>
 

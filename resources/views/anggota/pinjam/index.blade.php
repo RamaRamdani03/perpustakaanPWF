@@ -1,91 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Daftar Pinjaman Buku</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .bg-dark-brown { background-color: #353333; }
-    .bg-brown-hover:hover { background-color: #4a4a4a; }
-    .bg-brown { background-color: #5c4033; }
+    .bg-brown {
+      background-color: #5c4033;
+    }
+
+    .bg-overlay {
+      background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('{{ asset('images/perpussantai.jpg') }}');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
   </style>
 </head>
-<body class="bg-library bg-fixed font-sans">
 
-  <div class="min-h-screen bg-overlay flex">
-    <!-- Sidebar -->
-    <aside class="w-64 bg-brown text-white p-6 space-y-6 flex flex-col">
-      <div class="flex items-center space-x-4">
-        <img src="{{ asset('images/logoperpus.png') }}" class="h-10" alt="Logo" />
-        <span class="text-xl font-bold">Perpustakaan</span>
+<body class="bg-overlay font-sans min-h-screen">
+
+  <!-- Navbar Atas -->
+  <header class="bg-white bg-opacity-90 shadow-md flex items-center justify-between px-6 py-4">
+    <div class="flex items-center space-x-3">
+      <a href="{{ route('anggota.dashboard') }}">
+        <img src="{{ asset('images/logoperpus.png') }}" class="h-10 cursor-pointer" alt="Logo">
+      </a>
+      <span class="text-lg font-bold">Peminjaman (Anggota)</span>
+    </div>
+
+    <nav class="flex items-center space-x-6">
+      <a href="{{ route('anggota.pinjam.riwayat') }}" class="text-sm font-medium hover:underline">Pinjam Buku</a>
+
+      <div class="relative">
+        <button onclick="toggleDropdown()" class="flex items-center text-sm font-medium hover:underline">
+          {{ auth('anggota')->user()->nama_anggota ?? 'Anggota' }}
+          <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <div id="dropdownMenu"
+          class="hidden absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded shadow-md z-10">
+          <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit"
+              class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</button>
+          </form>
+        </div>
       </div>
-      <nav class="flex-grow">
-        <ul class="space-y-3 text-sm font-medium">
-          <li><a href="{{ route('anggota.dashboard') }}" class="block px-3 py-2 hover:bg-black hover:text-brown rounded">Dashboard</a></li>
-          <li><a href="{{ route('anggota.pinjam.riwayat') }}" class="block px-3 py-2 bg-black text-brown rounded">Peminjaman Buku</a></li>
-        </ul>
-      </nav>
-      <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button type="submit" class="block w-full bg-red-600 hover:bg-red-700 py-2 rounded text-center text-white font-semibold">Logout</button>
-      </form>
-    </aside>
+    </nav>
+  </header>
 
-    <!-- Main Content -->
-    <main class="flex-grow p-10">
-      <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-800">Daftar Pinjaman Buku</h1>
-        <a href="{{ route('anggota.pinjam.form') }}" class="bg-brown text-white px-4 py-2 rounded hover:bg-opacity-90 font-semibold transition">
-          + Tambah Peminjaman
-        </a>
+  <!-- Main Content -->
+  <main class="p-10">
+    <div class="flex justify-between items-center mb-8">
+      <a href="{{ route('anggota.pinjam.form') }}"
+        class="bg-brown text-white px-4 py-2 rounded hover:bg-opacity-90 font-semibold transition">
+        + Tambah Peminjaman
+      </a>
+    </div>
+
+    <h1 class="text-center text-3xl font-bold text-white mb-10">Daftar Pinjaman Buku</h1>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      @forelse($peminjamans as $pinjam)
+      <div class="bg-white p-4 rounded-xl shadow-lg hover:scale-105 transition-transform">
+
+      @if($pinjam->buku->cover)
+      <img src="{{ asset('covers/' . $pinjam->buku->cover) }}" alt="{{ $pinjam->buku->judul_buku }}"
+      class="h-56 w-auto max-w-full mx-auto object-contain rounded-xl shadow-md">
+    @else
+      <img src="{{ asset('images/default-cover.jpg') }}" alt="{{ $pinjam->buku->judul_buku }}"
+      class="h-56 w-auto max-w-full mx-auto object-contain rounded-xl shadow-md">
+    @endif
+
+
+      <div class="text-sm text-gray-800 space-y-1 mt-4">
+        <p><strong>Judul Buku:</strong><br>{{ $pinjam->buku->judul_buku }}</p>
+        <p><strong>Penulis:</strong><br>{{ $pinjam->buku->penulis }}</p>
+        <p><strong>Tanggal Peminjaman:</strong><br>{{ \Carbon\Carbon::parse($pinjam->tgl_pinjam)->format('Y-m-d') }}
+        </p>
+        <p><strong>Tanggal
+          Pengembalian:</strong><br>{{ \Carbon\Carbon::parse($pinjam->batas_kembali)->format('Y-m-d') }}</p>
       </div>
 
-      <!-- Daftar Buku Dipinjam -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        @forelse($peminjamans as $pinjam)
-          <div class="bg-white p-4 rounded-lg shadow hover:shadow-lg transition duration-300">
-            @if($pinjam->buku->cover)
-  <img 
-    src="data:image/jpeg;base64,{{ base64_encode($pinjam->buku->cover) }}" 
-    alt="{{ $pinjam->buku->judul_buku }}" 
-    class="w-full h-56 object-cover rounded mb-4"
-  >
-@else
-  <img 
-    src="{{ asset('images/default-book.jpg') }}" 
-    alt="Default Cover" 
-    class="w-full h-56 object-cover rounded mb-4"
-  >
-@endif
-            <div class="text-sm text-gray-800 space-y-1">
-              <p><strong>Judul Buku:</strong><br>{{ $pinjam->buku->judul_buku }}</p>
-              <p><strong>Penulis:</strong><br>{{ $pinjam->buku->penulis }}</p>
-              <p><strong>Tanggal Peminjaman:</strong><br>{{ \Carbon\Carbon::parse($pinjam->tgl_pinjam)->format('Y-m-d') }}</p>
-              <p><strong>Tanggal Pengembalian:</strong><br>{{ \Carbon\Carbon::parse($pinjam->batas_kembali)->format('Y-m-d') }}</p>
-            </div>
-            @if ($pinjam->status_pinjam === 'accepted')
-  <form action="{{ route('anggota.pinjam.kembalikan', $pinjam->id_pinjam) }}" method="POST" class="mt-4" onsubmit="return confirm('Yakin ingin mengembalikan buku ini?');">
-    @csrf
-    <button type="submit" class="w-full bg-brown text-white py-2 rounded hover:bg-opacity-90 font-semibold">
+      @if ($pinjam->status_pinjam === 'accepted')
+      <form action="{{ route('anggota.pinjam.kembalikan', $pinjam->id_pinjam) }}" method="POST" class="mt-4"
+      onsubmit="return confirm('Yakin ingin mengembalikan buku ini?');">
+      @csrf
+      <button type="submit" class="w-full bg-brown text-white py-2 rounded hover:bg-opacity-90 font-semibold">
       Kembalikan
-    </button>
-  </form>
-@else
-  <div class="mt-4 text-center text-sm text-red-600 font-semibold">
-    Belum di-accept
-  </div>
-@endif
-
-          </div>
-        @empty
-          <div class="col-span-full text-center text-gray-500 py-10">
-            <img src="{{ asset('images/empty.png') }}" alt="No data" class="mx-auto w-32 mb-4">
-            <p class="text-lg">Belum ada buku yang sedang dipinjam.</p>
-          </div>
-        @endforelse
+      </button>
+      </form>
+    @else
+      <div class="mt-4 text-center text-sm text-red-600 font-semibold">
+      Belum di-accept
       </div>
-    </main>
-  </div>
+    @endif
+      </div>
+    @empty
+      <div class="col-span-full text-center text-white py-10">
+      <img src="{{ asset('images/empty.png') }}" alt="No data" class="mx-auto w-32 mb-4">
+      <p class="text-lg">Belum ada buku yang sedang dipinjam.</p>
+      </div>
+    @endforelse
+    </div>
+  </main>
+
+  <script>
+    function toggleDropdown() {
+      document.getElementById('dropdownMenu').classList.toggle('hidden');
+    }
+
+    window.addEventListener('click', function (e) {
+      const button = document.querySelector('button[onclick="toggleDropdown()"]');
+      const dropdown = document.getElementById('dropdownMenu');
+      if (!button.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.add('hidden');
+      }
+    });
+  </script>
 
 </body>
+
 </html>
