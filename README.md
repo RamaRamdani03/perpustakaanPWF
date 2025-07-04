@@ -1,8 +1,8 @@
 Link Database: https://drive.google.com/file/d/1j5xHOr5H-N35AJzG_mRf1UUU9mU1edGh/view?usp=drive_link
 
-Link Paper Rujukan: https://umyac-my.sharepoint.com/:f:/g/personal/bimo_aditya_ft22_mail_umy_ac_id/EifCGw65EitCqrT5kIUZZbQBtiDq1hJXhAT5mdUcX5knbg
-
 Link Paper: https://drive.google.com/file/d/1lA0HhzQzW3L36kovYKsTUmzannERPMps/view?usp=sharing  
+
+Link Paper Rujukan: https://umyac-my.sharepoint.com/:f:/g/personal/bimo_aditya_ft22_mail_umy_ac_id/EifCGw65EitCqrT5kIUZZbQBtiDq1hJXhAT5mdUcX5knbg
 
 Link Resume: https://drive.google.com/drive/folders/10Y-arp59FZ0c3ohxSKxi7bnwAHJjW1ry?usp=sharing 
 
